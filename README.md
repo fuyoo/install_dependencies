@@ -1,2 +1,2 @@
 # install_dependencies
-dependencies script
+A shell script can be automatically install often used dependencies.
