@@ -251,34 +251,9 @@ install_check(){
 }
 
 
-install_mbedtls(){
-    if [ ! -f /usr/lib/libmbedtls.a ]; then
-        cd "${cur_dir}" || exit
-        download "${mbedtls_file}-apache.tgz" "${mbedtls_url}"
-        tar xf "${mbedtls_file}"-apache.tgz
-        cd "${mbedtls_file}" || exit
-        make SHARED=1 CFLAGS=-fPIC
-        make DESTDIR=/usr install
-        if [ $? -ne 0 ]; then
-            echo -e "[${red}Error${plain}] ${mbedtls_file} install failed."
-            install_cleanup
-            exit 1
-        fi
-    else
-        echo -e "[${green}Info${plain}] ${mbedtls_file} already installed."
-    fi
-}
-
-
-install_cleanup(){
-    cd "${cur_dir}" || exit
-    rm -rf "${mbedtls_file}" "${mbedtls_file}"-apache.tgz
-}
-
 do_install(){
     disable_selinux
     install_dependencies
-    install_cleanup
 }
 
 do_install
