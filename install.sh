@@ -251,23 +251,6 @@ install_check(){
 }
 
 
-install_libsodium(){
-    if [ ! -f /usr/lib/libsodium.a ]; then
-        cd "${cur_dir}" || exit
-        download "${libsodium_file}.tar.gz" "${libsodium_url}"
-        tar zxf ${libsodium_file}.tar.gz
-        cd ${libsodium_file} || exit
-        ./configure --prefix=/usr && make && make install
-        if [ $? -ne 0 ]; then
-            echo -e "[${red}Error${plain}] ${libsodium_file} install failed."
-            install_cleanup
-            exit 1
-        fi
-    else
-        echo -e "[${green}Info${plain}] ${libsodium_file} already installed."
-    fi
-}
-
 install_mbedtls(){
     if [ ! -f /usr/lib/libmbedtls.a ]; then
         cd "${cur_dir}" || exit
@@ -287,24 +270,14 @@ install_mbedtls(){
 }
 
 
-install_main(){
-    install_libsodium
-    if ! ldconfig -p | grep -wq '/usr/lib'; then
-        echo '/usr/lib' > /etc/ld.so.conf.d/lib.conf
-    fi
-    ldconfig
-}
-
 install_cleanup(){
     cd "${cur_dir}" || exit
-    rm -rf ${libsodium_file} ${libsodium_file}.tar.gz
     rm -rf "${mbedtls_file}" "${mbedtls_file}"-apache.tgz
 }
 
 do_install(){
     disable_selinux
     install_dependencies
-    install_main
     install_cleanup
 }
 
